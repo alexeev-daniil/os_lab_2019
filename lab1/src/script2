@@ -1,0 +1,4 @@
+for((a=0;a<150;a++))
+do
+od -An -N1 -i /dev/urandom >> numbers.txt
+done
