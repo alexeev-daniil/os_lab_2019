@@ -33,14 +33,21 @@ int rollback_file(FILE** fp, char* filename) {
 
 pid_t* child_pids; 
 int child_num; 
+int status;
 
 static void PSIGKILL(int signo) {
     printf("SIGKILLing\n");
     printf("child num - %d\n", child_num);
-    for (int i=0; i < child_num; i++) {
-        printf("%d\t", i);
-        kill(child_pids[i], SIGKILL);
+    for(int i=0;i<child_num;i++)
+    {
+       printf("%d\t", i);
+       kill(child_pids[i], SIGKILL); 
     }
+    while(child_num>0){
+        pid_t zpid = waitpid(-1,&status,WNOHANG);
+        child_num--;
+    }
+    exit(0);
 }
 
 
@@ -164,7 +171,7 @@ int main(int argc, char **argv) {
         if (child_pid < 0) return 1;
 
         else {
-            
+        
             active_child_processes++;
             child_num++;
             child_pids = (pid_t*)realloc(child_pids, sizeof(pid_t) * child_num);
